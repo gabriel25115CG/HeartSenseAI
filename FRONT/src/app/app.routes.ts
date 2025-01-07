@@ -8,6 +8,7 @@ import { ContactComponent } from './contact/contact.component';
 import { ChatComponent } from './chat/chat.component';
 import { AuthGuard } from './auth.guard'; 
 import { ProfileComponent } from '../profile/profile.component';
+import { DocsComponent } from './docs/docs.component';
 
 
 export const routes: Routes = [
@@ -21,5 +22,6 @@ export const routes: Routes = [
     { path: 'contact', component: ContactComponent},
     { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },  
     { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+    { path: 'docs', component: DocsComponent},
 
 ];
