@@ -42,6 +42,8 @@ const corsOptions = {
   origin: '*',  // Permet toutes les origines
   methods: 'GET,POST,PUT,PATCH,DELETE',  // Méthodes autorisées
   allowedHeaders: 'Content-Type, Authorization',  // En-têtes autorisés
+  credentials: true  // Permet les cookies et autres informations d'authentification
+
 };
 app.use(cors(corsOptions));  // Appliquer CORS à toutes les routes
 

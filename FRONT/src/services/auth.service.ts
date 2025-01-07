@@ -7,10 +7,10 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrlSignup = 'http://api.heartsense.fr/api/auth/signup';
-  private apiUrlLogin = 'http://api.heartsense.fr/api/auth/signin';
-  private apiUrlUserInfo = 'http://api.heartsense.fr/api/auth/userinfo';
-  private apiUrlUpdateUser = 'http://api.heartsense.fr/api/auth/updateUser'; // Endpoint pour mettre à jour les données utilisateur
+  private apiUrlSignup = 'http://localhost:3001/api/auth/signup';
+  private apiUrlLogin = 'http://localhost:3001/api/auth/signin';
+  private apiUrlUserInfo = 'http://localhost:3001/api/auth/userinfo';
+  private apiUrlUpdateUser = 'http://localhost:3001/api/auth/updateUser'; // Endpoint pour mettre à jour les données utilisateur
 
   constructor(private http: HttpClient) {}
 
