@@ -46,4 +46,11 @@ L’accent est mis sur :
 1. Clonez le dépôt :
    ```bash
    git clone https://github.com/gabriel25115CG/HeartSenseAI.git
-   cd MonProjet
+   cd HeartSenseAI
+   cd FRONT
+   npm install
+   cd ..
+   cd API
+   sudo rm -r nodes_modules
+   npm install
+   node index.js
