@@ -1,0 +1,7 @@
+{"level":"info","message":"API Request: POST /api/auth/signin at 2025-01-07T19:41:44.558Z","timestamp":"2025-01-07T19:41:44.558Z"}
+{"level":"info","message":"API Request: GET /api/auth/userinfo at 2025-01-07T19:41:59.762Z","timestamp":"2025-01-07T19:41:59.762Z"}
+{"level":"info","message":"API Request: PATCH /api/auth/updateUser/undefined at 2025-01-07T19:42:07.960Z","timestamp":"2025-01-07T19:42:07.960Z"}
+{"level":"info","message":"API Request: POST /api/auth/signin at 2025-01-07T19:42:15.762Z","timestamp":"2025-01-07T19:42:15.762Z"}
+{"level":"info","message":"API Request: POST /api/auth/signin at 2025-01-07T20:04:15.185Z","timestamp":"2025-01-07T20:04:15.185Z"}
+{"level":"info","message":"API Request: GET /api/auth/userinfo at 2025-01-07T20:04:28.221Z","timestamp":"2025-01-07T20:04:28.221Z"}
+{"level":"info","message":"API Request: GET /api/auth/userinfo at 2025-01-07T20:05:56.313Z","timestamp":"2025-01-07T20:05:56.313Z"}
