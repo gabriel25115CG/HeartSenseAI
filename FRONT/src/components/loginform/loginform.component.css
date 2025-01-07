@@ -1,0 +1,20 @@
+/* Styles Tailwind spécifiques au formulaire */
+
+.form-container {
+    max-width: 320px;
+    border-radius: 0.75rem;
+    background-color: rgb(32, 31, 37);
+  }
+  
+  .input-group input:focus {
+    border-color: rgba(167, 139, 250);
+  }
+  
+  .forgot a, .signup a {
+    color: rgba(243, 244, 246, 1);
+  }
+  
+  .forgot a:hover, .signup a:hover {
+    text-decoration: underline rgba(167, 139, 250, 1);
+  }
+  
