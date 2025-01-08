@@ -46,11 +46,31 @@ L’accent est mis sur :
 1. Clonez le dépôt :
    ```bash
    git clone https://github.com/gabriel25115CG/HeartSenseAI.git
+
+2. Déplacez vous dans le bon dossier :
+
+   ```bash
    cd HeartSenseAI
    cd FRONT
+
+3. Installer les dépendances du frontend
+   ```bash
    npm install
+
+4. Retour a la racine
+   ```bash
    cd ..
+
+5. Naviguation dans le dossier API
+   ```bash
    cd API
+
+6. Suppression des mpdules existants
+
+   ```bash
    sudo rm -r nodes_modules
+
+7. Installation des dépendances & lancement du serveur Node JS
+   ```bash
    npm install
    node index.js
