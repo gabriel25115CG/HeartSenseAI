@@ -1,6 +1,6 @@
-# 🌟 MonProjet — Fait Maison, Auto-hébergé et Open Source
+# 🌟 HeartSense 
 
-Bienvenue dans **MonProjet**, une application moderne, puissante et 100 % open source conçue pour répondre à vos besoins en toute simplicité. Créée avec soin, cette solution est **faite maison**, entièrement **auto-hébergée**, et dédiée aux passionnés de liberté numérique et de transparence.
+Bienvenue dans **HeartSense**, une application moderne, puissante et 100 % open source conçue pour répondre à vos besoins en toute simplicité. Créée avec soin, cette solution est **faite maison**, entièrement **auto-hébergée**, et dédiée aux passionnés de liberté numérique et de transparence.
 
 ---
 
