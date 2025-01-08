@@ -65,7 +65,7 @@ L’accent est mis sur :
    ```bash
    cd API
 
-6. Suppression des mpdules existants
+6. Suppression des modules existants
 
    ```bash
    sudo rm -r nodes_modules
