@@ -9,37 +9,35 @@ export const generateResponse = async (req, res) => {
     return res.status(400).json({ error: 'Les champs "model" et "prompt" sont requis.' });
   }
 
+  console.log('Requête reçue avec les données:', req.body); // Log des données de la requête
+
   try {
     // Effectuer une requête POST vers l'API Ollama
-    const response = await axios.post('http://localhost:11434/api/generate', {
-      model,
-      prompt,
-      stream,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
+    const response = await axios.post('http://127.0.0.1:11434/api/generate', {
+        model,
+        prompt,
+        stream
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+
+    console.log('Réponse de l\'API Ollama:', response.data); // Log de la réponse de l'API Ollama
+
     // Retourner la réponse de l'API Ollama au client
-    return res.status(200).json(response.data);
+    res.status(200).json(response.data);
   } catch (error) {
-    console.error('Erreur lors de l\'appel à l\'API Ollama:', error.message);
+    console.error('Erreur lors de l\'appel à l\'API Ollama:', error);
 
     // Gérer les erreurs de l'API Ollama
     if (error.response) {
-      // L'API Ollama a renvoyé une réponse d'erreur
+      console.error('Détails de la réponse d\'Ollama:', error.response.data);
       return res.status(error.response.status).json({
         error: error.response.data || 'Erreur depuis l\'API Ollama',
       });
     }
 
-    // Si c'est une erreur réseau ou autre erreur non liée à la réponse de l'API
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(503).json({ error: 'Impossible de se connecter à l\'API Ollama. Serveur non disponible.' });
-    }
-
-    // Gérer d'autres types d'erreurs (exemple: erreur de requête malformée)
-    return res.status(500).json({ error: 'Erreur interne du serveur. Veuillez réessayer plus tard.' });
+    // Gérer d'autres types d'erreurs
+    res.status(500).json({ error: 'Erreur interne du serveur.' });
   }
 };
