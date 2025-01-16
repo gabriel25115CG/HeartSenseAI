@@ -1,10 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'; // Importer le package CORS
-import { validateEnv } from './utils/validateEnv.js'; // Si tu as des variables d'env à valider
+import { validateEnv } from './utils/validateEnv.js'; // Valider les variables d'env
 import { authenticateToken } from './middleware/authMiddleware.js'; // Middleware d'authentification
 import authRoutes from './routes/authRoutes.js';
 import firestoreRoutes from './routes/firestoreRoutes.js';
+import client from 'prom-client'; // Client Prometheus
+import ollamaRoutes from './routes/ollamaRoutes.js'; // Routes pour l'API Ollama
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -14,61 +16,28 @@ validateEnv();
 
 // Créer l'application Express
 const app = express();
+
+// Middleware pour parser les JSON
 app.use(express.json());
 
 // Configurer CORS pour autoriser toutes les origines
 const corsOptions = {
-  origin: '*',  // Permet toutes les origines
-  methods: 'GET,POST,PUT,PATCH,DELETE',  // Méthodes autorisées
-  allowedHeaders: 'Content-Type, Authorization',  // En-têtes autorisés
-  credentials: true  // Permet les cookies et autres informations d'authentification
-
+  origin: '*', // Permet toutes les origines
+  methods: 'GET,POST,PUT,PATCH,DELETE', // Méthodes autorisées
+  allowedHeaders: 'Content-Type, Authorization', // En-têtes autorisés
+  credentials: true, // Permet les cookies et autres informations d'authentification
 };
-app.use(cors(corsOptions));  // Appliquer CORS à toutes les routes
+app.use(cors(corsOptions)); // Appliquer CORS à toutes les routes
 
-// Middleware pour logger chaque requête et suivre les métriques
-app.use((req, res, next) => {
-  const { method, url } = req;
-  const timestamp = new Date().toISOString();
-
-  // Log l'appel d'API avec Winston
-  logger.info(`API Request: ${method} ${url} at ${timestamp}`);
-
-  const route = req.route ? req.route.path : req.url;
-  const start = Date.now();
-
-  res.on('finish', () => {
-    // Incrémenter le compteur pour chaque requête HTTP
-    httpRequestsTotal.inc({
-      method: req.method,
-      route: route,
-      status: res.statusCode,
-    });
-
-    // Mesurer la durée de la requête
-    const duration = (Date.now() - start) / 1000; // Durée en secondes
-    httpRequestDurationSeconds.observe({
-      method: req.method,
-      route: route,
-    }, duration);
-
-    // Mettre à jour la durée moyenne des requêtes
-    updateAvgResponseTime(duration);
-
-    // Suivre les statuts des réponses HTTP
-    httpRequestsByStatus.inc({
-      status: res.statusCode.toString(),
-    });
-  });
-
-  next();
-});
 
 // Route de base
 app.get('/', (req, res) => {
-  const name = process.env.NAME || '?';
+  const name = process.env.NAME || 'Anonymous';
   res.send(`What are you doing here ${name}!`);
 });
+
+// Routes pour l'API Ollama
+app.use('/api', ollamaRoutes);
 
 // Middleware d'authentification pour certaines routes
 app.use('/api/auth/updateUser', authenticateToken);
@@ -83,12 +52,13 @@ app.get('/metrics', async (req, res) => {
     res.set('Content-Type', client.register.contentType);
     res.end(await client.register.metrics());
   } catch (err) {
-    res.status(500).end(err);
+    console.error('Erreur lors de l\'exposition des métriques:', err);
+    res.status(500).send('Erreur lors de l\'exposition des métriques.');
   }
 });
 
 // Démarrer le serveur
-const port = parseInt(process.env.PORT, 10);
+const port = parseInt(process.env.PORT, 10) || 3001; 
 app.listen(port, '0.0.0.0', () => {
   console.log(`API server listening on port ${port}`);
 });
