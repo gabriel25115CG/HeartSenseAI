@@ -5,33 +5,13 @@ import { validateEnv } from './utils/validateEnv.js'; // Si tu as des variables 
 import { authenticateToken } from './middleware/authMiddleware.js'; // Middleware d'authentification
 import authRoutes from './routes/authRoutes.js';
 import firestoreRoutes from './routes/firestoreRoutes.js';
-import {
-  httpRequestsTotal,
-  httpRequestDurationSeconds,
-  httpRequestsByStatus,
-  updateAvgResponseTime
-} from './metrics.js'; // Importer les métriques
 import client from 'prom-client'; // Client Prometheus
-import winston from 'winston'; // Importer Winston
 
 // Charger les variables d'environnement
 dotenv.config();
 
 // Valider les variables d'environnement
 validateEnv();
-
-// Configuration du logger avec Winston
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({ format: winston.format.simple() }),
-    new winston.transports.File({ filename: 'api_logs.log' })
-  ],
-});
 
 // Créer l'application Express
 const app = express();
