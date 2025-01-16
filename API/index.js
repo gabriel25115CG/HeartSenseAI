@@ -5,7 +5,6 @@ import { validateEnv } from './utils/validateEnv.js'; // Si tu as des variables 
 import { authenticateToken } from './middleware/authMiddleware.js'; // Middleware d'authentification
 import authRoutes from './routes/authRoutes.js';
 import firestoreRoutes from './routes/firestoreRoutes.js';
-import client from 'prom-client'; // Client Prometheus
 
 // Charger les variables d'environnement
 dotenv.config();
