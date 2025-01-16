@@ -1,1 +1,4 @@
 .env
+.idx
+node_modules
+package-lock.json
