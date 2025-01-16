@@ -16,6 +16,8 @@ export class ChatboxComponent {
 
   constructor(private chatbotService: ChatbotService) {}
 
+
+  
   // Fonction pour envoyer le message
   sendMessage() {
     if (this.userMessage.trim()) {
