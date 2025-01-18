@@ -12,7 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./chatbox.component.css']
 })
 export class ChatboxComponent implements OnInit {
-  messages: any[] = [];
+  conversations: any[] = []; // Historique des conversations
+  currentConversation: any[] = []; // Conversation actuellement sélectionnée
   userMessage: string = '';
   isLoading: boolean = false;
   userFirstName: string = '';  // Variable pour stocker le prénom de l'utilisateur
@@ -23,7 +24,6 @@ export class ChatboxComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Récupérer les informations de l'utilisateur à l'initialisation du composant
     this.authService.getUserInfo().subscribe(
       (userInfo) => {
         this.userFirstName = userInfo.firstName || 'Utilisateur';  // Récupérer le prénom de l'utilisateur
@@ -35,15 +35,27 @@ export class ChatboxComponent implements OnInit {
     );
   }
 
+  // Charger une conversation existante
+  loadConversation(index: number) {
+    this.currentConversation = this.conversations[index].messages;
+  }
+
+  // Créer une nouvelle conversation
+  newConversation() {
+    this.currentConversation = []; // Réinitialiser la conversation active
+    this.conversations.push({ messages: [] }); // Ajouter une nouvelle conversation vide
+  }
+
+  // Fonction pour envoyer un message
   sendMessage() {
     if (this.userMessage.trim()) {
-      this.messages.push({ text: this.userMessage, sender: 'user' });
+      this.currentConversation.push({ text: this.userMessage, sender: 'user' });
       this.isLoading = true;
 
       this.chatbotService.generateResponse(this.userMessage).subscribe(
         (response) => {
-          this.messages.push({ text: response.response, sender: 'ai' });
-          this.userMessage = '';
+          this.currentConversation.push({ text: response.response, sender: 'ai' });
+          this.userMessage = '';  // Réinitialiser le champ de saisie
           this.isLoading = false;
         },
         (error) => {
@@ -57,6 +69,6 @@ export class ChatboxComponent implements OnInit {
   // Méthode pour envoyer le message de bienvenue
   sendWelcomeMessage() {
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
-    this.messages.push({ text: welcomeMessage, sender: 'ai' });
+    this.currentConversation.push({ text: welcomeMessage, sender: 'ai' });
   }
 }
