@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class AuthService {
   private apiUrlSignup = 'http://localhost:3001/api/auth/signup';
   private apiUrlLogin = 'http://localhost:3001/api/auth/signin';
   private apiUrlUserInfo = 'http://localhost:3001/api/auth/userinfo';
-  private apiUrlUpdateUser = 'http://localhost:3001/api/auth/updateUser'; // Endpoint pour mettre à jour les données utilisateur
+  private apiUrlUpdateUser = 'http://localhost:3001/api/auth/updateUser';
 
   constructor(private http: HttpClient) {}
 
@@ -23,25 +23,25 @@ export class AuthService {
     phoneNumber: string;
     address: string;
   }): Observable<{ uid: string; email: string }> {
-    return this.http.post<{ uid: string; email: string }>(this.apiUrlSignup, data)
-      .pipe(
-        // Stocker l'UID dans le localStorage après l'inscription
-        tap(response => {
-          localStorage.setItem('user_uid', response.uid);  // Stockage de l'UID dans le localStorage
-        })
-      );
+    return this.http.post<{ uid: string; email: string }>(this.apiUrlSignup, data).pipe(
+      tap(response => {
+        localStorage.setItem('user_uid', response.uid);
+        localStorage.setItem('user_email', response.email);  // Enregistrer l'email également
+      }),
+      catchError(this.handleError)  // Gestion des erreurs
+    );
   }
 
   // Méthode pour connecter un utilisateur
   login(data: { email: string; password: string }): Observable<{ token: string; uid: string; email: string }> {
-    return this.http.post<{ token: string; uid: string; email: string }>(this.apiUrlLogin, data)
-      .pipe(
-        // Stocker l'UID et le token dans le localStorage après la connexion
-        tap(response => {
-          localStorage.setItem('auth_token', response.token);
-          localStorage.setItem('user_uid', response.uid);  // Stockage de l'UID
-        })
-      );
+    return this.http.post<{ token: string; uid: string; email: string }>(this.apiUrlLogin, data).pipe(
+      tap(response => {
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('user_uid', response.uid);
+        localStorage.setItem('user_email', response.email);  // Enregistrer l'email également
+      }),
+      catchError(this.handleError)  // Gestion des erreurs
+    );
   }
 
   // Vérifie si l'utilisateur est authentifié
@@ -62,7 +62,8 @@ export class AuthService {
   // Déconnexion
   logout(): void {
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_uid');  // Supprimer l'UID du localStorage lors de la déconnexion
+    localStorage.removeItem('user_uid');
+    localStorage.removeItem('user_email');  // Supprimer aussi l'email
   }
 
   // Méthode pour récupérer les informations de l'utilisateur
@@ -74,10 +75,8 @@ export class AuthService {
     }
 
     return this.http.get<any>(this.apiUrlUserInfo, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+      headers: { 'Authorization': `Bearer ${token}` }
+    }).pipe(catchError(this.handleError));
   }
 
   // Méthode pour mettre à jour les informations de l'utilisateur
@@ -94,30 +93,39 @@ export class AuthService {
       throw new Error('Token not found');
     }
   
-    // Récupérer l'UID de l'utilisateur stocké dans le localStorage
     const userId = localStorage.getItem('user_uid');
   
     if (!userId) {
-      // Afficher un message d'erreur si l'UID n'est pas trouvé dans le localStorage
       console.error('User ID not found in localStorage');
       throw new Error('User ID not found in localStorage');
     }
   
-    console.log('Updating user with UID:', userId);  // Log de l'UID pour débogage
-    
-    // Construire l'URL avec l'ID de l'utilisateur
     const url = `${this.apiUrlUpdateUser}/${userId}`;
   
-    // Utilisation de PATCH pour la mise à jour partielle des informations
     return this.http.patch<any>(url, data, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      headers: { 'Authorization': `Bearer ${token}` }
     }).pipe(
       tap(response => {
-        console.log('User updated successfully', response);
-      })
+        // Mettre à jour les informations dans le localStorage si nécessaire
+        if (data.email) {
+          localStorage.setItem('user_email', data.email);
+        }
+      }),
+      catchError(this.handleError)  // Gestion des erreurs
     );
   }
-  
+
+  // Gestion centralisée des erreurs
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Une erreur est survenue';
+    if (error.error instanceof ErrorEvent) {
+      // Erreur côté client
+      errorMessage = `Erreur: ${error.error.message}`;
+    } else {
+      // Erreur côté serveur
+      errorMessage = `Code d'erreur: ${error.status}, Message: ${error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(errorMessage);  // Retourner l'erreur
+  }
 }
