@@ -19,6 +19,7 @@ export const signUp = async (req, res) => {
     // Ajouter les informations supplémentaires dans Firestore
     const userRef = db.collection('users').doc(userRecord.uid);
     await userRef.set({
+      uid: userRecord.uid, // Inclure l'UID dans les données
       email,
       firstName,
       lastName,
@@ -27,6 +28,7 @@ export const signUp = async (req, res) => {
       createdAt: new Date(),
     });
 
+    // Retourner l'UID et l'email
     res.status(201).json({ uid: userRecord.uid, email: userRecord.email });
   } catch (error) {
     console.error('Error creating new user:', error.message);
@@ -160,7 +162,7 @@ export const deleteUser = async (req, res) => {
 
 // Récupérer les informations de l'utilisateur connecté
 export const getUserInfo = async (req, res) => {
-  const uid = req.user.uid;
+  const uid = req.user.uid; // Récupérer l'UID de l'utilisateur connecté
 
   try {
     const userRef = db.collection('users').doc(uid);
@@ -170,7 +172,11 @@ export const getUserInfo = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json(doc.data());
+    // Ajouter l'UID au contenu du document
+    const userData = doc.data();
+    userData.uid = uid;
+
+    res.status(200).json(userData);
   } catch (error) {
     console.error('Error getting user info:', error.message);
     res.status(500).json({ error: 'Failed to get user info. ' + error.message });
