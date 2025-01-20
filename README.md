@@ -35,42 +35,15 @@ L’accent est mis sur :
 - **Partage et communauté** : Une plateforme qui évolue grâce à vous.
 
 ---
+## 🐳 Utilisation avec Docker
 
-## 📦 Installation
-
-### Pré-requis :
-- **Node.js** (v16 ou supérieur)  
-- **Git**  
 
 ### Étapes d’installation :
+
 1. Clonez le dépôt :
    ```bash
    git clone https://github.com/gabriel25115CG/HeartSenseAI.git
 
-2. Déplacez vous dans le bon dossier :
-
-   ```bash
-   cd HeartSenseAI
-   cd FRONT
-
-3. Installer les dépendances du frontend
-   ```bash
-   npm install
-
-4. Retour a la racine
-   ```bash
-   cd ..
-
-5. Naviguation dans le dossier API
-   ```bash
-   cd API
-
-6. Suppression des modules existants
-
-   ```bash
-   sudo rm -r nodes_modules
-
-7. Installation des dépendances & lancement du serveur Node JS
-   ```bash
-   npm install
-   node index.js
+2. Lancer le frontend et l'API avec Docker Compose
+```bash 
+   docker-compose up --build
