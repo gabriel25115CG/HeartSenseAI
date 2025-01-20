@@ -1,117 +1,99 @@
 <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-8">
   <div class="mx-auto max-w-screen-lg px-4 2xl:px-0">
-    <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl md:mb-6">General overview</h2>
+    <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl md:mb-6">Update Profile</h2>
 
     <div class="py-4 md:py-8">
-      <div class="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
-        <!-- Colonne 1 -->
-        <div class="space-y-4">
-          <div class="flex space-x-4">
-            <img class="h-16 w-16 rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="User Avatar" />
-            <div>
-              <span class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-                PRO Account
-              </span>
-              <h2 class="flex items-center text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl">
-                {{ userInfo?.firstName }} {{ userInfo?.lastName }}
-                <!-- Icône pour activer/désactiver l'édition -->
-                <button type="button" (click)="toggleEditMode()" class="ml-2 text-blue-500 dark:text-blue-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.121 4.879a4 4 0 0 1 5.657 5.657l-7.78 7.78a4 4 0 0 1-5.656 0L5 14.828a4 4 0 0 1 0-5.657l7.78-7.78a4 4 0 0 1 5.657 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </button>
-              </h2>
-            </div>
+      <div class="space-y-6">
+        <!-- Avatar et Info utilisateur -->
+        <div class="flex items-center space-x-4 mb-8">
+          <img class="h-16 w-16 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="User Avatar" />
+          <div>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">
+              {{ userInfo?.firstName }} {{ userInfo?.lastName }}
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400">{{ userInfo?.email }}</p>
+            <button type="button" (click)="toggleEditMode()" class="mt-2 text-blue-500 dark:text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.121 4.879a4 4 0 0 1 5.657 5.657l-7.78 7.78a4 4 0 0 1-5.656 0L5 14.828a4 4 0 0 1 0-5.657l7.78-7.78a4 4 0 0 1 5.657 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Champs de saisie -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Colonne 1 -->
+          <div class="space-y-6">
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Email Address</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.email" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" type="email" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.email }}</span>
+              </dd>
+            </dl>
+
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Home Address</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.address" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.address }}</span>
+              </dd>
+            </dl>
+
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">First Name</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.firstName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.firstName }}</span>
+              </dd>
+            </dl>
           </div>
 
-          <!-- Inputs avec mode édition activé/désactivé -->
-          <dl>
-            <div class="flex items-center space-x-2">
-              <dt class="font-semibold text-gray-900 dark:text-white">Email Address</dt>
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-            </div>
-            <dd class="text-gray-500 dark:text-gray-400">
-              <!-- Champ de saisie conditionnel avec [readonly] et *ngIf -->
-              <input *ngIf="isEditMode" [(ngModel)]="userInfo.email" class="p-2 border rounded" type="email" />
-              <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.email }}</span>
-            </dd>
-          </dl>
+          <!-- Colonne 2 -->
+          <div class="space-y-6">
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Last Name</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.lastName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.lastName }}</span>
+              </dd>
+            </dl>
 
-          <dl>
-            <div class="flex items-center space-x-2">
-              <dt class="font-semibold text-gray-900 dark:text-white">Home Address</dt>
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-            </div>
-            <dd class="text-gray-500 dark:text-gray-400">
-              <!-- Champ de saisie conditionnel avec [readonly] et *ngIf -->
-              <input *ngIf="isEditMode" [(ngModel)]="userInfo.address" class="p-2 border rounded" />
-              <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.address }}</span>
-            </dd>
-          </dl>
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Phone Number</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.phoneNumber" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.phoneNumber }}</span>
+              </dd>
+            </dl>
+          </div>
         </div>
 
-        <!-- Colonne 2 -->
-        <div class="space-y-4">
-          <dl>
-            <div class="flex items-center space-x-2">
-              <dt class="font-semibold text-gray-900 dark:text-white">First Name</dt>
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-            </div>
-            <dd class="text-gray-500 dark:text-gray-400">
-              <!-- Champ de saisie conditionnel avec [readonly] et *ngIf -->
-              <input *ngIf="isEditMode" [(ngModel)]="userInfo.firstName" class="p-2 border rounded" />
-              <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.firstName }}</span>
-            </dd>
-          </dl>
-
-          <dl>
-            <div class="flex items-center space-x-2">
-              <dt class="font-semibold text-gray-900 dark:text-white">Last Name</dt>
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-            </div>
-            <dd class="text-gray-500 dark:text-gray-400">
-              <!-- Champ de saisie conditionnel avec [readonly] et *ngIf -->
-              <input *ngIf="isEditMode" [(ngModel)]="userInfo.lastName" class="p-2 border rounded" />
-              <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.lastName }}</span>
-            </dd>
-          </dl>
-
-          <dl>
-            <div class="flex items-center space-x-2">
-              <dt class="font-semibold text-gray-900 dark:text-white">Phone Number</dt>
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-              </svg>
-            </div>
-            <dd class="text-gray-500 dark:text-gray-400">
-              <!-- Champ de saisie conditionnel avec [readonly] et *ngIf -->
-              <input *ngIf="isEditMode" [(ngModel)]="userInfo.phoneNumber" class="p-2 border rounded" />
-              <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.phoneNumber }}</span>
-            </dd>
-          </dl>
+        <!-- Boutons -->
+        <div class="mt-8 flex justify-between items-center">
+          <div class="flex space-x-4">
+            <button *ngIf="isEditMode" (click)="saveChanges()" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Save Changes</button>
+            <button *ngIf="!isEditMode" (click)="toggleEditMode()" class="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Edit Profile</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Boutons pour activer/désactiver l'édition -->
-      <div class="mt-6 flex space-x-4">
-        <button *ngIf="isEditMode" (click)="saveChanges()" class="px-4 py-2 bg-blue-500 text-white rounded">Save Changes</button>
-        <button *ngIf="!isEditMode" (click)="toggleEditMode()" class="px-4 py-2 bg-gray-500 text-white rounded">Edit Profile</button>
-      </div>
-
-      <!-- Bouton de déconnexion inchangé -->
-      <div class="mt-6">
-        <button (click)="logout()" class="px-4 py-2 bg-red-500 text-white rounded">
-          Logout
-        </button>
+        <!-- Bouton de déconnexion sous la 2ème colonne, aligné avec les autres boutons -->
+        <div class="mt-6 flex justify-between">
+          <button (click)="logout()" class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </div>

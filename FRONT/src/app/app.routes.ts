@@ -9,7 +9,6 @@ import { ChatComponent } from './chat/chat.component';
 import { AuthGuard } from './auth.guard'; 
 import { ProfileComponent } from '../profile/profile.component';
 import { DocsComponent } from './docs/docs.component';
-import { AppComponent } from './app.component';
 
 
 export const routes: Routes = [

@@ -1,0 +1,23 @@
+
+services:
+  frontend:
+    build:
+      context: ./FRONT
+    ports:
+      - "80:4200"  # Exposer le port du frontend (Angular)
+    depends_on:
+      - api  # S'assurer que l'API est lancée avant le frontend
+    networks:
+      - heart_network  # Créer un réseau pour la communication entre services
+  
+  api:
+    build:
+      context: ./API
+    ports:
+      - "3001:3001"  # Exposer le port de l'API (Node.js)
+    networks:
+      - heart_network  # Créer un réseau pour la communication entre services
+
+networks:
+  heart_network:
+    driver: bridge  # Utiliser le driver bridge pour la communication entre conteneurs
