@@ -36,17 +36,10 @@ app.get('/', (req, res) => {
   res.send(`What are you doing here ${name}!`);
 });
 
-// Routes pour l'API Ollama
 app.use('/api', ollamaRoutes);
-
-// Middleware d'authentification pour certaines routes
 app.use('/api/auth/updateUser', authenticateToken);
-
-// Routes de l'API
 app.use('/api/auth', authRoutes);
 app.use('/api/firestore', firestoreRoutes);
-
-// Route pour exposer les métriques à Prometheus
 app.get('/metrics', async (req, res) => {
   try {
     res.set('Content-Type', client.register.contentType);
