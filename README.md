@@ -48,7 +48,7 @@ L’accent est mis sur :
    ```bash 
    docker-compose up --build
 
-🤖 Partie IA (Ollama)
+## 🤖 Partie IA (Ollama)
 
 Si vous souhaitez exécuter la partie IA avec Ollama, suivez ces étapes :
 
