@@ -3,7 +3,7 @@
     <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl md:mb-6">Update Profile</h2>
 
     <div class="py-4 md:py-8">
-      <div class="space-y-8">
+      <div class="space-y-6">
         <!-- Avatar et Info utilisateur -->
         <div class="flex items-center space-x-4 mb-8">
           <img class="h-16 w-16 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" alt="User Avatar" />
@@ -22,63 +22,61 @@
         </div>
 
         <!-- Champs de saisie -->
-        <div class="space-y-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Colonne de droite -->
-            <div class="space-y-6"> <!-- Ajout de 'space-y-6' pour chaque colonne -->
-              <dl>
-                <div class="flex items-center space-x-2">
-                  <dt class="font-semibold text-gray-900 dark:text-white">Email Address</dt>
-                </div>
-                <dd>
-                  <input *ngIf="isEditMode" [(ngModel)]="userInfo.email" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500" type="email" />
-                  <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.email }}</span>
-                </dd>
-              </dl>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Colonne 1 -->
+          <div class="space-y-6">
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Email Address</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.email" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" type="email" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.email }}</span>
+              </dd>
+            </dl>
 
-              <dl>
-                <div class="flex items-center space-x-2">
-                  <dt class="font-semibold text-gray-900 dark:text-white">Home Address</dt>
-                </div>
-                <dd>
-                  <input *ngIf="isEditMode" [(ngModel)]="userInfo.address" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500" />
-                  <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.address }}</span>
-                </dd>
-              </dl>
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Home Address</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.address" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.address }}</span>
+              </dd>
+            </dl>
 
-              <dl>
-                <div class="flex items-center space-x-2">
-                  <dt class="font-semibold text-gray-900 dark:text-white">First Name</dt>
-                </div>
-                <dd>
-                  <input *ngIf="isEditMode" [(ngModel)]="userInfo.firstName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500" />
-                  <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.firstName }}</span>
-                </dd>
-              </dl>
-            </div>
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">First Name</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.firstName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.firstName }}</span>
+              </dd>
+            </dl>
+          </div>
 
-            <!-- Colonne de gauche -->
-            <div class="space-y-6"> <!-- Ajout de 'space-y-6' ici aussi pour espacer les champs -->
-              <dl>
-                <div class="flex items-center space-x-2">
-                  <dt class="font-semibold text-gray-900 dark:text-white">Last Name</dt>
-                </div>
-                <dd>
-                  <input *ngIf="isEditMode" [(ngModel)]="userInfo.lastName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500" />
-                  <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.lastName }}</span>
-                </dd>
-              </dl>
+          <!-- Colonne 2 -->
+          <div class="space-y-6">
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Last Name</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.lastName" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.lastName }}</span>
+              </dd>
+            </dl>
 
-              <dl>
-                <div class="flex items-center space-x-2">
-                  <dt class="font-semibold text-gray-900 dark:text-white">Phone Number</dt>
-                </div>
-                <dd>
-                  <input *ngIf="isEditMode" [(ngModel)]="userInfo.phoneNumber" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500" />
-                  <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.phoneNumber }}</span>
-                </dd>
-              </dl>
-            </div>
+            <dl>
+              <div class="flex items-center space-x-2">
+                <dt class="font-semibold text-gray-900 dark:text-white">Phone Number</dt>
+              </div>
+              <dd>
+                <input *ngIf="isEditMode" [(ngModel)]="userInfo.phoneNumber" class="w-full p-2 mt-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400" />
+                <span *ngIf="!isEditMode" class="text-gray-500 dark:text-gray-400">{{ userInfo.phoneNumber }}</span>
+              </dd>
+            </dl>
           </div>
         </div>
 
@@ -88,8 +86,10 @@
             <button *ngIf="isEditMode" (click)="saveChanges()" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Save Changes</button>
             <button *ngIf="!isEditMode" (click)="toggleEditMode()" class="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Edit Profile</button>
           </div>
+        </div>
 
-          <!-- Bouton de déconnexion -->
+        <!-- Bouton de déconnexion sous la 2ème colonne, aligné avec les autres boutons -->
+        <div class="mt-6 flex justify-between">
           <button (click)="logout()" class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
             Logout
           </button>
