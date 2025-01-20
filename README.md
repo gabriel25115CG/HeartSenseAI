@@ -45,5 +45,21 @@ L’accent est mis sur :
    git clone https://github.com/gabriel25115CG/HeartSenseAI.git
 
 2. Lancer le frontend et l'API avec Docker Compose
-```bash 
+
+   ```bash 
    docker-compose up --build
+
+## 🤖 Partie IA (Ollama)
+
+Si vous souhaitez exécuter la partie IA avec Ollama, suivez ces étapes :
+
+1. Téléchargez et installez Ollama sur votre machine.
+
+
+2. Une fois Ollama installé, lancez le modèle Llama 3.2 avec la commande suivante :
+   ```bash 
+   ollama run llama3.2
+
+
+
+
