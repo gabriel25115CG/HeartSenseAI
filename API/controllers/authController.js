@@ -97,12 +97,27 @@ export const updateUser = async (req, res) => {
   const { uid } = req.params;
   const { firstName, lastName, phoneNumber, address } = req.body;
 
+  // Vérification de l'autorisation : l'utilisateur connecté doit être celui qui effectue la mise à jour
   if (!req.user || req.user.uid !== uid) {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 
+  // Vérifier si l'email est présent dans la requête, et si c'est le cas, renvoyer une erreur
+  if (req.body.email) {
+    return res.status(400).json({ error: 'Email update is not allowed' });
+  }
+
   try {
+    // Accéder au document de l'utilisateur dans Firestore
     const userRef = db.collection('users').doc(uid);
+    const userSnapshot = await userRef.get();
+
+    // Vérifier si l'utilisateur existe dans la base de données
+    if (!userSnapshot.exists) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Mettre à jour les informations utilisateur dans Firestore
     await userRef.update({
       firstName,
       lastName,
@@ -110,12 +125,15 @@ export const updateUser = async (req, res) => {
       address,
     });
 
+    // Répondre avec un message de succès
     res.status(200).json({ message: 'User updated successfully' });
   } catch (error) {
+    // Gestion des erreurs lors de la mise à jour
     console.error('Error updating user:', error.message);
     res.status(500).json({ error: 'Failed to update user. ' + error.message });
   }
 };
+
 
 // Déconnexion d'un utilisateur (invalidant le token côté serveur)
 let tokenBlacklist = [];

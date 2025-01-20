@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -66,17 +66,23 @@ export class AuthService {
     localStorage.removeItem('user_email');  // Supprimer aussi l'email
   }
 
-  // Méthode pour récupérer les informations de l'utilisateur
+  // Récupérer les informations de l'utilisateur
   getUserInfo(): Observable<any> {
     const token = this.getToken();
-
+  
     if (!token) {
-      throw new Error('Token not found');
+      console.error('Token not found');
+      return throwError('Token not found');
     }
-
+  
     return this.http.get<any>(this.apiUrlUserInfo, {
       headers: { 'Authorization': `Bearer ${token}` }
-    }).pipe(catchError(this.handleError));
+    }).pipe(
+      tap(response => {
+        console.log('User info fetched:', response);  // Vérification de la réponse
+      }),
+      catchError(this.handleError)
+    );
   }
 
   // Méthode pour mettre à jour les informations de l'utilisateur
@@ -87,33 +93,48 @@ export class AuthService {
     address?: string;
     email?: string;
   }): Observable<any> {
+    const { email, ...updateData } = data;
+  
     const token = this.getToken();
-  
     if (!token) {
-      throw new Error('Token not found');
+      return throwError('Token not found');
     }
   
-    const userId = localStorage.getItem('user_uid');
+    return this.getUserInfo().pipe(
+      switchMap(userInfo => {
+        console.log('User info in updateUser:', userInfo); // Vérification de l'info utilisateur
   
-    if (!userId) {
-      console.error('User ID not found in localStorage');
-      throw new Error('User ID not found in localStorage');
-    }
+        const userId = userInfo.uid; // Utiliser 'uid' ici au lieu de 'id'
   
-    const url = `${this.apiUrlUpdateUser}/${userId}`;
-  
-    return this.http.patch<any>(url, data, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    }).pipe(
-      tap(response => {
-        // Mettre à jour les informations dans le localStorage si nécessaire
-        if (data.email) {
-          localStorage.setItem('user_email', data.email);
+        if (!userId) {
+          return throwError('User ID not found');
         }
-      }),
-      catchError(this.handleError)  // Gestion des erreurs
+  
+        const url = `${this.apiUrlUpdateUser}/${userId}`;
+        return this.http.patch<any>(url, updateData, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }).pipe(
+          tap(response => {
+            // Mettre à jour les valeurs dans localStorage
+            if (updateData.firstName) {
+              localStorage.setItem('user_firstName', updateData.firstName);
+            }
+            if (updateData.lastName) {
+              localStorage.setItem('user_lastName', updateData.lastName);
+            }
+            if (updateData.phoneNumber) {
+              localStorage.setItem('user_phoneNumber', updateData.phoneNumber);
+            }
+            if (updateData.address) {
+              localStorage.setItem('user_address', updateData.address);
+            }
+          }),
+          catchError(this.handleError)
+        );
+      })
     );
   }
+  
 
   // Gestion centralisée des erreurs
   private handleError(error: HttpErrorResponse) {
