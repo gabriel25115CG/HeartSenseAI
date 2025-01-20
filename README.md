@@ -47,3 +47,5 @@ L’accent est mis sur :
 2. Lancer le frontend et l'API avec Docker Compose
 ```bash 
    docker-compose up --build
+
+## 🤖 Partie IA (Ollama)
