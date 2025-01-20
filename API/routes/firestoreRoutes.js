@@ -1,6 +1,7 @@
 import express from 'express';
 import admin from '../config/firebaseConfig.js'; 
-import { addDocument, getDocument } from '../controllers/FirestoreController.js';
+//import { addDocument, getDocument } from '../controllers/FirestoreController.js';
+
 
 const router = express.Router();
 const db = admin.firestore();

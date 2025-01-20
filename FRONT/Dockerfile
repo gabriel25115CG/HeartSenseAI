@@ -1,36 +1,23 @@
-# Utiliser une image Debian comme base
-FROM node:20-bullseye-slim
+# Étape 1 : Utiliser une image Node.js appropriée
+FROM node:20 AS build
 
-# Installer Node.js 22 et Angular CLI
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg && \
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Étape 2 : Définir le répertoire de travail
+WORKDIR /app
 
-RUN npm install -g @angular/cli
-
-# Définir le répertoire de travail
-WORKDIR /usr/src/app
-
-# Supprimer le cache npm et le répertoire node_modules
+# Étape 3 : Copier les fichiers de dépendances
 COPY package*.json ./
-RUN rm -rf node_modules package-lock.json && npm cache clean --force
 
+# Étape 4 : Installer les dépendances proprement
+RUN npm ci
 
-# Installer les dépendances
-RUN npm install 
+# Étape 5 : Installer Angular CLI globalement pour éviter les conflits de version
+RUN npm install -g @angular/cli@latest
 
-RUN npm i
-
-
-# Copier le reste des fichiers
+# Étape 6 : Copier le reste des fichiers du projet
 COPY . .
 
-# Exposer le port
+# Étape 7 : Exposer le port 4200 (port par défaut pour Angular)
 EXPOSE 4200
 
-# Commande pour démarrer Angular
-CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+# Étape 8 : Lancer l'application en mode développement
+CMD ["ng", "serve", "--host", "0.0.0.0"]
