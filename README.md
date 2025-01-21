@@ -55,11 +55,7 @@ Si vous souhaitez exécuter la partie IA avec Ollama, suivez ces étapes :
 
 1. Téléchargez et installez Ollama sur votre machine.
 
-
-2. Une fois Ollama installé, lancez le modèle Llama 3.2 avec la commande suivante :
    ```bash 
    ollama run llama3.2
-
-
 
 
