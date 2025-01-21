@@ -11,16 +11,16 @@ export const generateResponse = async (req, res) => {
 
   console.log('Requête reçue avec les données:', req.body); // Log des données de la requête
 
+  // Définir l'URL de l'API Ollama
+  const ollamaUrl = process.env.OLLAMA_URL || 'http://127.0.0.1:11434/api/generate';
+
   try {
     // Effectuer une requête POST vers l'API Ollama
-    const response = await axios.post('http://127.0.0.1:11434/api/generate', {
-        model,
-        prompt,
-        stream
-      }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
+    const response = await axios.post(
+      ollamaUrl,
+      { model, prompt, stream },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
 
     console.log('Réponse de l\'API Ollama:', response.data); // Log de la réponse de l'API Ollama
 
