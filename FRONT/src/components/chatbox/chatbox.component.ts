@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatbotService } from '../../services/chatbot.service';
-import { AuthService } from '../../services/auth.service';  // Import du service d'authentification
+import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -12,22 +12,22 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./chatbox.component.css']
 })
 export class ChatboxComponent implements OnInit {
-  conversations: any[] = []; // Historique des conversations
-  currentConversation: any[] = []; // Conversation actuellement sélectionnée
+  conversations: any[] = [];
+  currentConversation: any[] = [];
   userMessage: string = '';
   isLoading: boolean = false;
-  userFirstName: string = '';  // Variable pour stocker le prénom de l'utilisateur
+  userFirstName: string = '';
 
   constructor(
     private chatbotService: ChatbotService,
-    private authService: AuthService  // Injecter le service AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.authService.getUserInfo().subscribe(
       (userInfo) => {
-        this.userFirstName = userInfo.firstName || 'Utilisateur';  // Récupérer le prénom de l'utilisateur
-        this.sendWelcomeMessage();  // Envoyer un message de bienvenue de l'IA
+        this.userFirstName = userInfo.firstName || 'Utilisateur';
+        this.sendWelcomeMessage();
       },
       (error) => {
         console.error('Erreur lors de la récupération des informations de l\'utilisateur', error);
@@ -35,18 +35,15 @@ export class ChatboxComponent implements OnInit {
     );
   }
 
-  // Charger une conversation existante
   loadConversation(index: number) {
     this.currentConversation = this.conversations[index].messages;
   }
 
-  // Créer une nouvelle conversation
   newConversation() {
-    this.currentConversation = []; // Réinitialiser la conversation active
-    this.conversations.push({ messages: [] }); // Ajouter une nouvelle conversation vide
+    this.currentConversation = [];
+    this.conversations.push({ messages: [] });
   }
 
-  // Fonction pour envoyer un message
   sendMessage() {
     if (this.userMessage.trim()) {
       this.currentConversation.push({ text: this.userMessage, sender: 'user' });
@@ -54,8 +51,10 @@ export class ChatboxComponent implements OnInit {
 
       this.chatbotService.generateResponse(this.userMessage).subscribe(
         (response) => {
-          this.currentConversation.push({ text: response.response, sender: 'ai' });
-          this.userMessage = '';  // Réinitialiser le champ de saisie
+          // Transformer les \n en sauts de ligne réels
+          const formattedResponse = response.response.replace(/\\n/g, '\n');
+          this.currentConversation.push({ text: formattedResponse, sender: 'ai' });
+          this.userMessage = '';
           this.isLoading = false;
         },
         (error) => {
@@ -66,7 +65,6 @@ export class ChatboxComponent implements OnInit {
     }
   }
 
-  // Méthode pour envoyer le message de bienvenue
   sendWelcomeMessage() {
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
     this.currentConversation.push({ text: welcomeMessage, sender: 'ai' });
