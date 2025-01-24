@@ -2,21 +2,18 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube' // Assure-toi d'avoir configuré un serveur SonarQube dans Jenkins
-        SONARQUBE_TOKEN = credentials('sonar-token') // Si tu utilises un token pour l'authentification
+        SONARQUBE_SERVER = 'SonarQube' // Le nom que tu as donné à ton serveur SonarQube dans Jenkins
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Récupérer le code depuis GitHub
                 git 'https://github.com/gabriel25115CG/HeartSenseAI.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Ajouter ici les étapes de build (si nécessaire)
                 echo 'Building the project...'
             }
         }
@@ -24,7 +21,7 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 script {
-                    // Scanner le code avec SonarQube (si tu utilises SonarQube)
+                    // Exécute le scan avec SonarQube
                     withSonarQubeEnv('SonarQube') {
                         sh 'mvn clean install sonar:sonar'
                     }
@@ -34,7 +31,6 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                // Vérifier la qualité du code via SonarQube (si SonarQube est configuré)
                 script {
                     timeout(time: 1, unit: 'HOURS') {
                         waitForQualityGate()
