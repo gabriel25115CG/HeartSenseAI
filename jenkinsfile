@@ -2,19 +2,60 @@ pipeline {
     agent any
 
     environment {
-        ZAP_PATH = "/opt/zaproxy/zap.sh"  // Chemin vers le script zap.sh installé
+        FRONT_DIR = 'Front'
+        API_DIR = 'API'
+        ZAP_PATH = '/opt/zaproxy/zap.sh'  // Chemin vers ZAP si tu veux faire un scan de l'application déployée
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 echo 'Checking out code from GitHub...'
-                // Utilisation de l'étape Checkout pour récupérer le dépôt GitHub
                 git 'https://github.com/gabriel25115CG/HeartSenseAI'
             }
         }
 
-        stage('Run OWASP ZAP') {
+        stage('Install Dependencies - Front') {
+            steps {
+                echo 'Installing dependencies for the Angular front-end...'
+                dir("${FRONT_DIR}") {
+                    // Installer les dépendances du projet Angular
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Snyk for Front-End Security') {
+            steps {
+                echo 'Running Snyk security scan for Front-End...'
+                dir("${FRONT_DIR}") {
+                    // Exécuter un scan de sécurité avec Snyk pour le front-end
+                    sh 'snyk test --all-projects'
+                }
+            }
+        }
+
+        stage('Install Dependencies - API') {
+            steps {
+                echo 'Installing dependencies for the Node.js API...'
+                dir("${API_DIR}") {
+                    // Installer les dépendances du projet Node.js
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Snyk for API Security') {
+            steps {
+                echo 'Running Snyk security scan for API...'
+                dir("${API_DIR}") {
+                    // Exécuter un scan de sécurité avec Snyk pour l'API
+                    sh 'snyk test --all-projects'
+                }
+            }
+        }
+
+        stage('Run OWASP ZAP on the application') {
             steps {
                 echo 'Running OWASP ZAP...'
 
@@ -23,21 +64,21 @@ pipeline {
                     ${ZAP_PATH} -daemon -config api.disablekey=true
                     # Attendre quelques secondes pour que ZAP se lance correctement
                     sleep 10
-                    # Exécuter un scan rapide sur ton application
-                    curl -X POST "http://localhost:8080/JSON/ascan/action/scan" -d "url=http://localhost:8080" -d "maxDepth=5" -d "enableContextualAlerts=false"
+                    # Exécuter un scan rapide sur ton application en ligne ou sur l'API
+                    curl -X POST "http://pipeline.heartsense.fr/JSON/ascan/action/scan" -d "url=http://pipeline.heartsense.fr" -d "maxDepth=5" -d "enableContextualAlerts=false"
                     # Attendre la fin du scan
                     sleep 30
                     # Générer un rapport HTML du scan
-                    ${ZAP_PATH} -cmd -quickurl http://localhost:8080 -report zap-report.html
+                    ${ZAP_PATH} -cmd -quickurl http://pipeline.heartsense.fr -report zap-report.html
                 '''
             }
         }
 
-        stage('Archive Report') {
+        stage('Archive Reports') {
             steps {
-                echo 'Archiving OWASP ZAP report...'
-                // Archiver le rapport généré pour y avoir accès dans Jenkins
-                archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
+                echo 'Archiving security reports...'
+                // Archiver tous les rapports générés
+                archiveArtifacts artifacts: '**/zap-report.html', allowEmptyArchive: true
             }
         }
     }
