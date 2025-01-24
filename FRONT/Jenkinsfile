@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        ZAP_PATH = "/opt/zaproxy/zap.sh"  // Chemin vers le script zap.sh installé
+    }
+
+    stages {
+        stage('Run OWASP ZAP') {
+            steps {
+                echo 'Running OWASP ZAP...'
+
+                // Lancer ZAP en mode démon
+                sh '''
+                    ${ZAP_PATH} -daemon -config api.disablekey=true
+                    # Attendre quelques secondes pour que ZAP se lance correctement
+                    sleep 10
+                    # Exécuter un scan rapide sur ton application
+                    zap-cli quick-scan --self-contained --start-options "-config api.disablekey=true" http://localhost:8080
+                    # Générer un rapport en HTML
+                    zap-cli report -o zap-report.html -f html
+                '''
+            }
+        }
+
+        stage('Archive Report') {
+            steps {
+                echo 'Archiving OWASP ZAP report...'
+                // Archiver le rapport généré pour y avoir accès dans Jenkins
+                archiveArtifacts artifacts: 'zap-report.html', allowEmptyArchive: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Fermer ZAP après l'exécution du scan
+            sh 'kill $(ps aux | grep "[z]ap" | awk "{print $2}") || true'
+        }
+    }
+}
