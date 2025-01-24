@@ -2,19 +2,27 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube' // Le nom que tu as donné à ton serveur SonarQube dans Jenkins
+        SONARQUBE_SERVER = 'SonarQube' // Nom du serveur SonarQube configuré dans Jenkins
+    }
+
+    tools {
+        // S'assure que Jenkins utilise la version Maven spécifiée dans Global Tool Configuration
+        maven 'Maven 3'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/gabriel25115CG/HeartSenseAI.git'
+                // Cloner le code depuis GitHub
+                git branch: 'main', url: 'https://github.com/gabriel25115CG/HeartSenseAI.git'
             }
         }
 
         stage('Build') {
             steps {
                 echo 'Building the project...'
+                // Maven exécutera la commande ici
+                sh 'mvn clean install'
             }
         }
 
@@ -23,7 +31,7 @@ pipeline {
                 script {
                     // Exécute le scan avec SonarQube
                     withSonarQubeEnv('SonarQube') {
-                        sh 'mvn clean install sonar:sonar'
+                        sh 'mvn sonar:sonar' // Exécution de SonarQube avec Maven
                     }
                 }
             }
@@ -32,8 +40,9 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
+                    // Attente du résultat de la qualité du code via SonarQube
                     timeout(time: 1, unit: 'HOURS') {
-                        waitForQualityGate()
+                        waitForQualityGate() // Attends la réponse de SonarQube
                     }
                 }
             }
