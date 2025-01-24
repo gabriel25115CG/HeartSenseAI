@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Checking out code from GitHub...'
+                // Utilisation de l'étape Checkout pour récupérer le dépôt GitHub
+                git 'https://github.com/gabriel25115CG/HeartSenseAI'
+            }
+        }
+
         stage('Run OWASP ZAP') {
             steps {
                 echo 'Running OWASP ZAP...'
@@ -16,9 +24,11 @@ pipeline {
                     # Attendre quelques secondes pour que ZAP se lance correctement
                     sleep 10
                     # Exécuter un scan rapide sur ton application
-                    zap-cli quick-scan --self-contained --start-options "-config api.disablekey=true" http://localhost:8080
-                    # Générer un rapport en HTML
-                    zap-cli report -o zap-report.html -f html
+                    curl -X POST "http://localhost:8080/JSON/ascan/action/scan" -d "url=http://localhost:8080" -d "maxDepth=5" -d "enableContextualAlerts=false"
+                    # Attendre la fin du scan
+                    sleep 30
+                    # Générer un rapport HTML du scan
+                    ${ZAP_PATH} -cmd -quickurl http://localhost:8080 -report zap-report.html
                 '''
             }
         }
