@@ -17,14 +17,17 @@ pipeline {
         }
 
         stage('Install Dependencies - Front') {
-            steps {
-                echo 'Installing dependencies for the Angular front-end...'
-                dir("${FRONT_DIR}") {
-                    // Installer les dépendances du projet Angular
-                    sh 'npm install'
-                }
-            }
+    steps {
+        echo 'Installing dependencies for the Angular front-end...'
+        dir("${FRONT_DIR}") {
+            // Vérifier si le fichier package.json existe
+            sh 'ls -alh'
+            // Installer les dépendances du projet Angular
+            sh 'npm install'
         }
+    }
+}
+
 
         stage('Run Snyk for Front-End Security') {
             steps {
