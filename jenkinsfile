@@ -2,95 +2,45 @@ pipeline {
     agent any
 
     environment {
-        FRONT_DIR = 'Front'
-        API_DIR = 'API'
-        ZAP_PATH = '/opt/zaproxy/zap.sh'  // Chemin vers ZAP si tu veux faire un scan de l'application déployée
+        SONARQUBE_SERVER = 'SonarQube' // Assure-toi d'avoir configuré un serveur SonarQube dans Jenkins
+        SONARQUBE_TOKEN = credentials('sonar-token') // Si tu utilises un token pour l'authentification
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub...'
-                // Cloner le dépôt avec la branche spécifiée et les identifiants si nécessaire
-                git credentialsId: 'your-github-credentials-id', branch: 'main', url: 'https://github.com/gabriel25115CG/HeartSenseAI'
+                // Récupérer le code depuis GitHub
+                git 'https://github.com/gabriel25115CG/HeartSenseAI.git'
             }
         }
 
-        stage('Install Dependencies - Front') {
-    steps {
-        echo 'Installing dependencies for the Angular front-end...'
-        dir("${FRONT_DIR}") {
-            // Vérifier si le fichier package.json existe
-            sh 'ls -alh'
-            // Installer les dépendances du projet Angular
-            sh 'npm install'
-        }
-    }
-}
-
-
-        stage('Run Snyk for Front-End Security') {
+        stage('Build') {
             steps {
-                echo 'Running Snyk security scan for Front-End...'
-                dir("${FRONT_DIR}") {
-                    // Exécuter un scan de sécurité avec Snyk pour le front-end
-                    sh 'snyk test --all-projects'
+                // Ajouter ici les étapes de build (si nécessaire)
+                echo 'Building the project...'
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                script {
+                    // Scanner le code avec SonarQube (si tu utilises SonarQube)
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'mvn clean install sonar:sonar'
+                    }
                 }
             }
         }
 
-        stage('Install Dependencies - API') {
+        stage('Quality Gate') {
             steps {
-                echo 'Installing dependencies for the Node.js API...'
-                dir("${API_DIR}") {
-                    // Installer les dépendances du projet Node.js
-                    sh 'npm install'
+                // Vérifier la qualité du code via SonarQube (si SonarQube est configuré)
+                script {
+                    timeout(time: 1, unit: 'HOURS') {
+                        waitForQualityGate()
+                    }
                 }
             }
-        }
-
-        stage('Run Snyk for API Security') {
-            steps {
-                echo 'Running Snyk security scan for API...'
-                dir("${API_DIR}") {
-                    // Exécuter un scan de sécurité avec Snyk pour l'API
-                    sh 'snyk test --all-projects'
-                }
-            }
-        }
-
-        stage('Run OWASP ZAP on the application') {
-            steps {
-                echo 'Running OWASP ZAP...'
-                // Lancer ZAP en mode démon
-                sh '''
-                    ${ZAP_PATH} -daemon -config api.disablekey=true
-                    # Attendre quelques secondes pour que ZAP se lance correctement
-                    sleep 10
-                    # Exécuter un scan rapide sur ton application en ligne ou sur l'API
-                    curl -X POST "http://pipeline.heartsense.fr/JSON/ascan/action/scan" -d "url=http://pipeline.heartsense.fr" -d "maxDepth=5" -d "enableContextualAlerts=false"
-                    # Attendre la fin du scan
-                    sleep 30
-                    # Générer un rapport HTML du scan
-                    ${ZAP_PATH} -cmd -quickurl http://pipeline.heartsense.fr -report zap-report.html
-                '''
-            }
-        }
-
-        stage('Archive Reports') {
-            steps {
-                echo 'Archiving security reports...'
-                // Archiver tous les rapports générés
-                archiveArtifacts artifacts: '**/zap-report.html', allowEmptyArchive: true
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-            // Fermer ZAP après l'exécution du scan
-            sh 'kill $(ps aux | grep "[z]ap" | awk "{print $2}") || true'
         }
     }
 }
