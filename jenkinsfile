@@ -1,13 +1,14 @@
 pipeline {
     agent any
 
-    environment {
-        SONARQUBE_SERVER = 'SonarQube' // Nom du serveur SonarQube configuré dans Jenkins
+    tools {
+        // Assurer que la version 20 de Node.js est utilisée
+        nodejs 'NodeJS 20'  // Assure-toi d'avoir configuré Node.js 20 dans Jenkins
     }
 
-    tools {
-        // S'assure que Jenkins utilise la version Maven spécifiée dans Global Tool Configuration
-        maven 'Maven 3'
+    environment {
+        // Si tu as des variables d'environnement nécessaires, ajoute-les ici
+        // par exemple pour configurer l'URL du serveur ou d'autres paramètres
     }
 
     stages {
@@ -18,34 +19,62 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies (API - ExpressJS)') {
             steps {
-                echo 'Building the project...'
-                // Maven exécutera la commande ici
-                sh 'mvn clean install'
-            }
-        }
-
-        stage('SonarQube Scan') {
-            steps {
-                script {
-                    // Exécute le scan avec SonarQube
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn sonar:sonar' // Exécution de SonarQube avec Maven
-                    }
+                // Installer les dépendances pour le backend Express.js
+                dir('API') {
+                    echo 'Installing dependencies for Express API...'
+                    sh 'npm install'
                 }
             }
         }
 
-        stage('Quality Gate') {
+        stage('Install Dependencies (Frontend - Angular)') {
             steps {
-                script {
-                    // Attente du résultat de la qualité du code via SonarQube
-                    timeout(time: 1, unit: 'HOURS') {
-                        waitForQualityGate() // Attends la réponse de SonarQube
-                    }
+                // Installer les dépendances pour Angular dans le dossier Front
+                dir('Front') {
+                    echo 'Installing dependencies for Angular frontend...'
+                    sh 'npm install'
                 }
             }
+        }
+
+        stage('Serve Frontend (Angular)') {
+            steps {
+                // Démarrer le serveur Angular en mode développement
+                dir('Front') {
+                    echo 'Starting Angular development server...'
+                    sh 'ng serve --host 0.0.0.0 --port 4200'  // L'option --host 0.0.0.0 permet d'exposer le serveur à l'extérieur
+                }
+            }
+        }
+
+        stage('Run API Tests') {
+            steps {
+                // Exécuter des tests pour ton API Express.js si tu en as
+                dir('API') {
+                    echo 'Running tests for Express API...'
+                    sh 'npm test'  // Remplace cette commande par celle que tu utilises pour tes tests
+                }
+            }
+        }
+
+        stage('Deploy API and Frontend') {
+            steps {
+                // Si tu souhaites déployer, tu peux le faire ici
+                // Par exemple démarrer l'API Express avec 'npm start' (si tu as une configuration de démarrage)
+                dir('API') {
+                    echo 'Starting Express API...'
+                    sh 'npm start'  // Remplace cette commande par celle que tu utilises pour démarrer ton API Express
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Étapes de nettoyage ou d'informations après le pipeline
+            echo 'Pipeline completed.'
         }
     }
 }
