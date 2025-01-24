@@ -7,13 +7,13 @@ pipeline {
         ZAP_PATH = '/opt/zaproxy/zap.sh'  // Chemin vers ZAP si tu veux faire un scan de l'application déployée
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                echo 'Checking out code from GitHub...'
-                git 'https://github.com/gabriel25115CG/HeartSenseAI'
-            }
-        }
+   stage('Checkout Code') {
+    steps {
+        echo 'Checking out code from GitHub...'
+        git branch: 'main', url: 'https://github.com/gabriel25115CG/HeartSenseAI'
+    }
+}
+
 
         stage('Install Dependencies - Front') {
             steps {
