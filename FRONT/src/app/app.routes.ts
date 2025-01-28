@@ -9,7 +9,7 @@ import { ChatComponent } from './chat/chat.component';
 import { AuthGuard } from './auth.guard'; 
 import { ProfileComponent } from '../profile/profile.component';
 import { DocsComponent } from './docs/docs.component';
-
+import { ErrorComponent } from './error/error.component';
 
 export const routes: Routes = [
 
@@ -23,5 +23,6 @@ export const routes: Routes = [
     { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },  
     { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'docs', component: DocsComponent},
+    { path: 'error', component: ErrorComponent},
 
 ];

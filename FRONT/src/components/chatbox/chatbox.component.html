@@ -5,7 +5,7 @@
       <button *ngFor="let conv of conversations; let i = index"
               (click)="loadConversation(i)"
               class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-        Conversation {{i + 1}}
+        Conversation {{i + 1}}s
       </button>
     </div>
     <button (click)="newConversation()"
