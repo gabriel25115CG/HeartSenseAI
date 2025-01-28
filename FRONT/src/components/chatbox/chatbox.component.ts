@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
 import { ChatbotService } from '../../services/chatbot.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -11,12 +11,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.css']
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked {
   conversations: any[] = [];
   currentConversation: any[] = [];
   userMessage: string = '';
   isLoading: boolean = false;
   userFirstName: string = '';
+
+  // Référence à l'élément de conteneur des messages
+  @ViewChild('messagesContainer') private messagesContainer: any;
 
   constructor(
     private chatbotService: ChatbotService,
@@ -35,15 +38,18 @@ export class ChatboxComponent implements OnInit {
     );
   }
 
+  // Charger une conversation existante
   loadConversation(index: number) {
     this.currentConversation = this.conversations[index].messages;
   }
 
+  // Créer une nouvelle conversation
   newConversation() {
     this.currentConversation = [];
     this.conversations.push({ messages: [] });
   }
 
+  // Envoyer un message
   sendMessage() {
     if (this.userMessage.trim()) {
       this.currentConversation.push({ text: this.userMessage, sender: 'user' });
@@ -63,9 +69,22 @@ export class ChatboxComponent implements OnInit {
       );
     }
   }
-  
+
+  // Message de bienvenue
   sendWelcomeMessage() {
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
     this.currentConversation.push({ text: welcomeMessage, sender: 'ai' });
+  }
+
+  // Faire défiler le conteneur vers le bas après chaque mise à jour
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  // Fonction pour faire défiler vers le bas
+  private scrollToBottom(): void {
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    }
   }
 }

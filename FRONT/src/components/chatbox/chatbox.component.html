@@ -1,5 +1,4 @@
 <div class="flex w-full h-screen bg-gray-900 text-white">
-  <!-- Menu de gauche pour l'historique des conversations -->
   <div class="w-64 bg-gray-800 flex flex-col py-4 px-2 border-r border-gray-700 mt-4">
     <h2 class="text-lg font-semibold mb-4 px-2">Conversations</h2>
     <div class="flex flex-col gap-2">
@@ -15,14 +14,12 @@
     </button>
   </div>
 
-  <!-- Contenu Principal -->
   <div class="flex flex-col justify-between w-3/4">
     <!-- Affichage des messages -->
-    <div class="flex flex-col overflow-auto px-4 py-6 gap-6 mt-24">
+    <div #messagesContainer class="flex flex-col overflow-auto px-4 py-6 gap-6 mt-24" style="max-height: calc(100vh - 120px)">
       <div *ngFor="let message of currentConversation; let i = index" 
            class="flex gap-6 mb-4" 
            [ngClass]="message.sender === 'user' ? 'justify-end' : 'justify-start'">
-        
         <div class="flex flex-col w-full">
           <div class="flex items-center gap-2" [ngClass]="message.sender === 'user' ? 'justify-end' : 'justify-start'">
             <svg *ngIf="message.sender === 'user'" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -40,7 +37,6 @@
             </svg>
           </div>
           
-          <!-- Bulle de message -->
           <div class="px-4 py-4 break-words word-wrap rounded-lg shadow-md transition-all duration-300 w-auto max-w-[60%]" 
                [ngClass]="message.sender === 'user' ? 'bg-indigo-600 text-white ml-auto mr-16' : 'bg-gray-800 text-gray-300 ml-16 mr-auto'">
             <pre class="whitespace-pre-wrap text-base font-normal leading-snug">{{ message.text }}</pre>
@@ -49,7 +45,6 @@
       </div>
     </div>
 
-    <!-- Champ d'input -->
     <div class="w-full px-6 py-3 rounded-3xl border border-gray-700 items-center gap-2 flex justify-between bg-gray-800 max-w-2xl mx-auto relative bottom-5 min-h-[60px]">
       <div class="flex items-center gap-2 w-full">
         <input [(ngModel)]="userMessage" 
@@ -59,7 +54,6 @@
       <div class="flex items-center gap-2">
         <button (click)="sendMessage()" 
                 class="items-center flex px-4 py-2 bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 transition-colors">
-          <!-- Affichage du Spinner pendant le chargement -->
           <div *ngIf="isLoading" role="status">
             <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -67,8 +61,9 @@
             </svg>
             <span class="sr-only">Loading...</span>
           </div>
-          <!-- Affichage du texte "Send" quand le chargement est terminé -->
-          <h3 *ngIf="!isLoading" class="text-white text-xs font-semibold leading-4 px-2">Send</h3>
+          <div *ngIf="!isLoading">
+            <h3 class="text-white text-xs font-semibold leading-4 px-2">Send</h3>
+          </div>
         </button>
       </div>
     </div>
