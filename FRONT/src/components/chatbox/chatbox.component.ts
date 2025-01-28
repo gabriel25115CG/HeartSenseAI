@@ -48,13 +48,13 @@ export class ChatboxComponent implements OnInit {
     if (this.userMessage.trim()) {
       this.currentConversation.push({ text: this.userMessage, sender: 'user' });
       this.isLoading = true;
-
+  
       this.chatbotService.generateResponse(this.userMessage).subscribe(
         (response) => {
-          // Transformer les \n en sauts de ligne réels
           const formattedResponse = response.response.replace(/\\n/g, '\n');
           this.currentConversation.push({ text: formattedResponse, sender: 'ai' });
           this.userMessage = '';
+          console.log('Champ réinitialisé:', this.userMessage); // Vérification
           this.isLoading = false;
         },
         (error) => {
@@ -64,7 +64,7 @@ export class ChatboxComponent implements OnInit {
       );
     }
   }
-
+  
   sendWelcomeMessage() {
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
     this.currentConversation.push({ text: welcomeMessage, sender: 'ai' });
