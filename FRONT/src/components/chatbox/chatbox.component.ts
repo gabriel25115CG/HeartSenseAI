@@ -47,19 +47,18 @@ export class ChatboxComponent implements OnInit {
   sendMessage() {
     if (this.userMessage.trim()) {
       this.currentConversation.push({ text: this.userMessage, sender: 'user' });
-      this.isLoading = true;
+      this.isLoading = true; // Démarrer le chargement
   
       this.chatbotService.generateResponse(this.userMessage).subscribe(
         (response) => {
           const formattedResponse = response.response.replace(/\\n/g, '\n');
           this.currentConversation.push({ text: formattedResponse, sender: 'ai' });
           this.userMessage = '';
-          console.log('Champ réinitialisé:', this.userMessage); // Vérification
-          this.isLoading = false;
+          this.isLoading = false; // Arrêter le chargement
         },
         (error) => {
           console.error('Erreur lors de la génération de la réponse', error);
-          this.isLoading = false;
+          this.isLoading = false; // Arrêter le chargement en cas d'erreur
         }
       );
     }
