@@ -23,6 +23,6 @@ export const routes: Routes = [
     { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },  
     { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'docs', component: DocsComponent},
-    { path: 'error', component: ErrorComponent},
-
+    { path: 'error', component: ErrorComponent },
+    { path: '**', redirectTo: '/error' }
 ];
