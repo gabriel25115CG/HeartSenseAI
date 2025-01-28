@@ -10,19 +10,21 @@ import { AuthGuard } from './auth.guard';
 import { ProfileComponent } from '../profile/profile.component';
 import { DocsComponent } from './docs/docs.component';
 import { ErrorComponent } from './error/error.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 export const routes: Routes = [
-
+    
     { path: 'home', component: HomeComponent },
-    { path: '',   redirectTo: '/home', pathMatch: 'full' }, 
-    { path: 'register', component: RegisterComponent},
-    { path: 'login', component: LoginComponent},
-    { path: 'faq', component: FaqComponent},
-    { path: 'terms', component: TermsComponent},
-    { path: 'contact', component: ContactComponent},
-    { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },  
+    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    { path: 'register', component: RegisterComponent },
+    { path: 'login', component: LoginComponent },
+    { path: 'faq', component: FaqComponent },
+    { path: 'terms', component: TermsComponent },
+    { path: 'contact', component: ContactComponent },
+    { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
     { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-    { path: 'docs', component: DocsComponent},
+    { path: 'docs', component: DocsComponent },
     { path: 'error', component: ErrorComponent },
+    { path: 'privacy', component: PrivacyComponent },
     { path: '**', redirectTo: '/error' }
 ];
