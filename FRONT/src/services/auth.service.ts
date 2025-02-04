@@ -28,7 +28,7 @@ export class AuthService {
         localStorage.setItem('user_uid', response.uid);
         localStorage.setItem('user_email', response.email);  // Enregistrer l'email également
       }),
-      catchError(this.handleError)  // Gestion des erreurs
+      catchError(this.handleError)  
     );
   }
 
@@ -38,9 +38,9 @@ export class AuthService {
       tap(response => {
         localStorage.setItem('auth_token', response.token);
         localStorage.setItem('user_uid', response.uid);
-        localStorage.setItem('user_email', response.email);  // Enregistrer l'email également
+        localStorage.setItem('user_email', response.email);  
       }),
-      catchError(this.handleError)  // Gestion des erreurs
+      catchError(this.handleError)  
     );
   }
 
@@ -79,7 +79,7 @@ export class AuthService {
       headers: { 'Authorization': `Bearer ${token}` }
     }).pipe(
       tap(response => {
-        console.log('User info fetched:', response);  // Vérification de la réponse
+        console.log('User info fetched:', response);  
       }),
       catchError(this.handleError)
     );
