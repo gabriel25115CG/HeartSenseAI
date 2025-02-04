@@ -3,6 +3,7 @@ import { ChatbotService } from '../../services/chatbot.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { marked } from 'marked'; 
 
 @Component({
   selector: 'app-chatbox',
@@ -18,7 +19,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   isLoading: boolean = false;
   userFirstName: string = '';
 
-  // Référence à l'élément de conteneur des messages
   @ViewChild('messagesContainer') private messagesContainer: any;
 
   constructor(
@@ -38,50 +38,44 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     );
   }
 
-  // Charger une conversation existante
   loadConversation(index: number) {
     this.currentConversation = this.conversations[index].messages;
   }
 
-  // Créer une nouvelle conversation
   newConversation() {
     this.currentConversation = [];
     this.conversations.push({ messages: [] });
   }
 
-  // Envoyer un message
   sendMessage() {
     if (this.userMessage.trim()) {
       this.currentConversation.push({ text: this.userMessage, sender: 'user' });
-      this.isLoading = true; // Démarrer le chargement
-  
+      this.isLoading = true;
+
       this.chatbotService.generateResponse(this.userMessage).subscribe(
         (response) => {
-          const formattedResponse = response.response.replace(/\\n/g, '\n');
+          const formattedResponse = marked(response.response); // ✅ Convertir Markdown en HTML
           this.currentConversation.push({ text: formattedResponse, sender: 'ai' });
           this.userMessage = '';
-          this.isLoading = false; // Arrêter le chargement
+          this.isLoading = false;
         },
         (error) => {
           console.error('Erreur lors de la génération de la réponse', error);
-          this.isLoading = false; // Arrêter le chargement en cas d'erreur
+          this.isLoading = false;
         }
       );
     }
   }
 
-  // Message de bienvenue
   sendWelcomeMessage() {
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
-    this.currentConversation.push({ text: welcomeMessage, sender: 'ai' });
+    this.currentConversation.push({ text: marked(welcomeMessage), sender: 'ai' });
   }
 
-  // Faire défiler le conteneur vers le bas après chaque mise à jour
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
 
-  // Fonction pour faire défiler vers le bas
   private scrollToBottom(): void {
     if (this.messagesContainer) {
       this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
