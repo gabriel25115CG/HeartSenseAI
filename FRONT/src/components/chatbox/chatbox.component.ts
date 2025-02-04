@@ -3,7 +3,10 @@ import { ChatbotService } from '../../services/chatbot.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { marked } from 'marked'; 
+import { marked } from 'marked';
+import { DomSanitizer } from '@angular/platform-browser'; 
+import DOMPurify from 'dompurify';
+
 
 @Component({
   selector: 'app-chatbox',
@@ -12,6 +15,7 @@ import { marked } from 'marked';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.css']
 })
+
 export class ChatboxComponent implements OnInit, AfterViewChecked {
   conversations: any[] = [];
   currentConversation: any[] = [];
@@ -23,7 +27,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private chatbotService: ChatbotService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer  // Ajouter le service DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -47,29 +52,43 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     this.conversations.push({ messages: [] });
   }
 
-  sendMessage() {
-    if (this.userMessage.trim()) {
-      this.currentConversation.push({ text: this.userMessage, sender: 'user' });
-      this.isLoading = true;
+  async sendMessage() {
+  if (this.userMessage.trim()) {
+    // Ajout du message utilisateur dans la conversation
+    this.currentConversation.push({ text: this.userMessage, sender: 'user' });
+    this.isLoading = true;
 
-      this.chatbotService.generateResponse(this.userMessage).subscribe(
-        (response) => {
-          const formattedResponse = marked(response.response); // ✅ Convertir Markdown en HTML
-          this.currentConversation.push({ text: formattedResponse, sender: 'ai' });
-          this.userMessage = '';
-          this.isLoading = false;
-        },
-        (error) => {
-          console.error('Erreur lors de la génération de la réponse', error);
-          this.isLoading = false;
-        }
-      );
-    }
+    this.chatbotService.generateResponse(this.userMessage).subscribe(
+      async (response) => { 
+        // Convertir la réponse en HTML, puis ajouter les <br /> pour les nouvelles lignes
+        const rawHtml = await marked(response.response, { breaks: true });
+        const formattedHtml = rawHtml.replace(/\n/g, '<br />'); // Remplace \n par <br />
+
+        // Sécuriser le contenu HTML
+        const sanitizedHtml = DOMPurify.sanitize(formattedHtml);
+
+        // Ajouter la réponse de l'IA à la conversation
+        this.currentConversation.push({ text: sanitizedHtml, sender: 'ai' });
+        this.userMessage = '';
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Erreur lors de la génération de la réponse', error);
+        this.isLoading = false;
+      }
+    );
   }
+}
 
-  sendWelcomeMessage() {
+  
+  async sendWelcomeMessage() {
+    // Message de bienvenue avec le prénom de l'utilisateur
     const welcomeMessage = `Bonjour ${this.userFirstName}, comment puis-je t'aider ?`;
-    this.currentConversation.push({ text: marked(welcomeMessage), sender: 'ai' });
+    const rawHtml = await marked(welcomeMessage, { breaks: true }); // Conversion du markdown
+    const sanitizedMessage = this.sanitizer.bypassSecurityTrustHtml(rawHtml); // Sécurisation avec DomSanitizer
+    
+    // Ajouter le message de bienvenue à la conversation
+    this.currentConversation.push({ text: sanitizedMessage, sender: 'ai' });
   }
 
   ngAfterViewChecked() {
@@ -78,6 +97,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
   private scrollToBottom(): void {
     if (this.messagesContainer) {
+      // Scroller la vue vers le bas à chaque nouvel ajout de message
       this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
     }
   }
