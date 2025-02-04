@@ -14,7 +14,7 @@ export const addDocument = async (req, res) => {
     const docRef = db.collection(collection).doc(docId);
 
     // Ajouter ou mettre à jour le document
-    await docRef.set(data, { merge: true }); // `merge: true` permet de fusionner les données au lieu de les écraser.
+    await docRef.set(data, { merge: true }); 
 
     res.status(200).json({ message: 'Document ajouté avec succès' });
   } catch (error) {
