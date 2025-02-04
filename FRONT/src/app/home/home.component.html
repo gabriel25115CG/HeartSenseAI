@@ -1,4 +1,10 @@
-<app-navbar></app-navbar>
+<div *ngIf="isAuthenticated(); else showNavbar">
+  <app-navbar2></app-navbar2>
+</div>
+<ng-template #showNavbar>
+  <app-navbar></app-navbar>
+</ng-template>
+
 <app-title></app-title>
 <app-cards></app-cards>
 <app-citation></app-citation>

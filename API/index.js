@@ -1,12 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors'; // Importer le package CORS
-import { validateEnv } from './utils/validateEnv.js'; // Valider les variables d'env
-import { authenticateToken } from './middleware/authMiddleware.js'; // Middleware d'authentification
+import cors from 'cors'; 
+import { validateEnv } from './utils/validateEnv.js'; 
+import { authenticateToken } from './middleware/authMiddleware.js'; 
 import authRoutes from './routes/authRoutes.js';
 import firestoreRoutes from './routes/firestoreRoutes.js';
-import client from 'prom-client'; // Client Prometheus
-import ollamaRoutes from './routes/ollamaRoutes.js'; // Routes pour l'API Ollama
+import ollamaRoutes from './routes/ollamaRoutes.js'; 
 
 // Charger les variables d'environnement
 dotenv.config();

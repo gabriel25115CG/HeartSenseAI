@@ -63,7 +63,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_uid');
-    localStorage.removeItem('user_email');  // Supprimer aussi l'email
+    localStorage.removeItem('user_email');  
   }
 
   // Récupérer les informations de l'utilisateur
