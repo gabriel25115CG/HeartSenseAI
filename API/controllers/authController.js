@@ -180,8 +180,8 @@ export const deleteUser = async (req, res) => {
 
 // Récupérer les informations de l'utilisateur connecté
 export const getUserInfo = async (req, res) => {
-  const uid = req.user.uid; // Récupérer l'UID de l'utilisateur connecté
-
+  const uid = req.user.uid;
+  
   try {
     const userRef = db.collection('users').doc(uid);
     const doc = await userRef.get();
