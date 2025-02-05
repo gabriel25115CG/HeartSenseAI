@@ -28,7 +28,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   constructor(
     private chatbotService: ChatbotService,
     private authService: AuthService,
-    private sanitizer: DomSanitizer  // Ajouter le service DomSanitizer
+    private sanitizer: DomSanitizer  
   ) {}
 
   ngOnInit(): void {
@@ -60,9 +60,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     this.chatbotService.generateResponse(this.userMessage).subscribe(
       async (response) => { 
-        // Convertir la réponse en HTML, puis ajouter les <br /> pour les nouvelles lignes
+
         const rawHtml = await marked(response.response, { breaks: true });
-        const formattedHtml = rawHtml.replace(/\n/g, '<br />'); // Remplace \n par <br />
+        const formattedHtml = rawHtml.replace(/\n/g, '<br />');
 
         // Sécuriser le contenu HTML
         const sanitizedHtml = DOMPurify.sanitize(formattedHtml);
