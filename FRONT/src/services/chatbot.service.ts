@@ -34,7 +34,7 @@ export class ChatbotService {
    * @param stream Si la réponse doit être envoyée en streaming, par défaut 'false'.
    * @returns Observable contenant la réponse de l'API.
    */
-  generateResponse(prompt: string, model: string = 'llama3.2', stream: boolean = false): Observable<ApiResponse> {
+  generateResponse(prompt: string, model: string = 'Lyrik/wouafwouaf', stream: boolean = false): Observable<ApiResponse> {
     // Corps de la requête
     const body = { model, prompt, stream };
     
