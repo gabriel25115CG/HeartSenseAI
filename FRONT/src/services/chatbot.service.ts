@@ -22,19 +22,19 @@ interface ApiResponse {
   providedIn: 'root'
 })
 export class ChatbotService {
-  // URL de l'API, assurez-vous qu'elle est correcte
-  private apiUrl = 'http://localhost:3001/api/generate'; 
+  // URL de l'API locale
+  private apiUrl = 'http://localhost:3001/api/generate';
 
   constructor(private http: HttpClient) { }
 
   /**
    * Génère une réponse du chatbot en envoyant un prompt à l'API.
    * @param prompt Le texte de l'utilisateur à envoyer à l'API.
-   * @param model Le modèle à utiliser, par défaut 'llama3.2'.
+   * @param model Le modèle à utiliser, par défaut 'toto'.
    * @param stream Si la réponse doit être envoyée en streaming, par défaut 'false'.
    * @returns Observable contenant la réponse de l'API.
    */
-  generateResponse(prompt: string, model: string = 'llama3.2', stream: boolean = false): Observable<ApiResponse> {
+  generateResponse(prompt: string, model: string = 'Lyrik/wouafwouaf', stream: boolean = false): Observable<ApiResponse> {
     // Corps de la requête
     const body = { model, prompt, stream };
     
